@@ -29,7 +29,7 @@ class Equipo(Base):
     __tablename__ = "equipos"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    numero_inventario = Column(String(100), nullable=False, index=True)
+    numero_inventario = Column(String(100), unique=True, nullable=False, index=True)
     tipo_equipo = Column(SAEnum(TipoEquipo), nullable=False, default=TipoEquipo.desktop)
     marca = Column(String(100), nullable=False)
     modelo = Column(String(150), nullable=False)

@@ -65,6 +65,14 @@ def obtener_equipo(equipo_id: uuid.UUID, db: Session = Depends(get_db)):
 @router.post("", response_model=EquipoResponse, status_code=201)
 def crear_equipo(equipo: EquipoCreate, db: Session = Depends(get_db)):
     """Crear un nuevo equipo de cómputo."""
+    # Verificar que el número de inventario no exista
+    existente_inv = crud.get_equipo_by_inventario(db, equipo.numero_inventario)
+    if existente_inv:
+        raise HTTPException(
+            status_code=409,
+            detail=f"Ya existe un equipo con el número de inventario '{equipo.numero_inventario}'",
+        )
+
     # Verificar que el número de serie no exista
     existente = crud.get_equipo_by_serie(db, equipo.numero_serie)
     if existente:
@@ -81,6 +89,15 @@ def actualizar_equipo(
     equipo_id: uuid.UUID, equipo: EquipoUpdate, db: Session = Depends(get_db)
 ):
     """Actualizar un equipo existente."""
+    # Si se actualiza el número de inventario, verificar que no exista
+    if equipo.numero_inventario:
+        existente_inv = crud.get_equipo_by_inventario(db, equipo.numero_inventario)
+        if existente_inv and existente_inv.id != equipo_id:
+            raise HTTPException(
+                status_code=409,
+                detail=f"Ya existe otro equipo con el número de inventario '{equipo.numero_inventario}'",
+            )
+
     # Si se actualiza el número de serie, verificar que no exista
     if equipo.numero_serie:
         existente = crud.get_equipo_by_serie(db, equipo.numero_serie)

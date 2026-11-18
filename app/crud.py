@@ -50,6 +50,11 @@ def get_equipo_by_serie(db: Session, numero_serie: str) -> Optional[Equipo]:
     return db.query(Equipo).filter(Equipo.numero_serie == numero_serie).first()
 
 
+def get_equipo_by_inventario(db: Session, numero_inventario: str) -> Optional[Equipo]:
+    """Obtener un equipo por su número de inventario."""
+    return db.query(Equipo).filter(Equipo.numero_inventario == numero_inventario).first()
+
+
 def create_equipo(db: Session, equipo_data: dict) -> Equipo:
     """Crear un nuevo equipo."""
     db_equipo = Equipo(**equipo_data)
